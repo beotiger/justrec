@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="http://beotiger/inc/css/main.css?1" type="text/css">
+<link rel="stylesheet" href="http://beotiger/inc/css/justcal.css" type="text/css">
+
+
+<script src="justrec.js"></script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+<script src="rec.js"></script>
+
+<title>JustRec - Javascript + Flash MP3 Recording Software</title>  
+
+<style>
+	#record
+	{
+		color:red;
+	}
+
+	#levelbase
+	{
+		width: 400px;
+		height: 25px;
+		background-color: #EEEEEE;
+		border: 1px solid #CCCCCC;
+	}
+
+	#levelbar
+	{
+		height: 25px;
+		width: 4px;
+		background-color: red;
+	}
+
+
+	#rec-ctrl
+	{
+	width: 400px;
+	background: #EEEEEE;
+	border: 1px solid #CCCCCC;
+	padding: 5px;
+	}
+</style>
+
+</head>
+
+<body> 
+
+<div id="main">
+
+<h1>JustRec: a JavaScript + Flash Microphone MP3 Recording</h1>
+<nav id="jc-nav">
+	<ul>
+		<li><a href="#dsc">Description</a></li>
+		<li><a href="#usg">Usage</a></li>
+		<li><a href="#dwn">Download</a></li>
+		
+		<li><a href="#cmd">Commands</a></li>
+		<li><a href="#opt">Options</a></li>
+		<li><a href="#dts">Demo</a></li>
+		<li><a href="#spt">Support</a></li>
+	</ul>
+</nav>
+<h2 id="dsc"><i class="fa">&#xf130;</i> Description</h2>
+<div>
+JustRec stands for JavaScript MP3 Recording.<br><br>
+
+It allows to save users' recordings as MP3 files on server.<br><br>
+
+It uses Adobe Flash(tm) (ActionScript) engine (<em>justrec.swf</em>)<br>
+to embed recording and MP3-converting capabilities inside any HTML page.<br><br>
+
+Flash plugin does not have any view for recording,<br>
+it hides behind your HTML layout and pops out only once during a session<br>
+while requesting access to user's camera and microphone.<br><br>
+
+You should make view and model for recording by HTML and JavaScript means.<br><br>
+
+You can communicate with ActionScript in your JavaScript file,<br>
+using <em>ExternalInterface</em> callbacks.<br><br>
+
+For example spawning <strong>justrec.record(60)</strong> allows you to start recording <br>
+user's microphone output (if they allow it of course)<br>
+during 60 seconds max or until <strong>justrec.stop()</strong> command will be spawned.<br>
+See full list of commands in <a href="#cmd">Commands</a> section.<br><br>
+
+
+See also section <a href="#usg">Usage</a> for details about using JustRec.<br><br>
+
+JustRec is subject to <b>MIT license</b>, and you can use it in any product,<br>
+change source code and do what you want with it without permission.<br>
+See <a href="http://beotiger.com/mit-license" target="_blank">The MIT License (MIT)</a> for the full text of this license.<br><br>
+<br></div>
+
+<hr>
+
+
+
+<h2 id="usg"><i class="fa">&#xf08b;</i> Usage</h2>
+<ol>
+	<li>Download <b>justrec.zip</b> or <strong>justrec.tgz</strong> (see section <a href="#dwn">Download</a>).</li>
+	
+	<li>Unzip it somewhere inside your project.<br>
+	There are three files in this archive -	<strong>justrec.js</strong>, <strong>justrec.swf</strong> and <strong>micupload.php</strong>.
+	</li>
+
+	
+	<li>Make a link to <strong>justrec.js</strong> in you HTML page
+		like this:<br>
+		<code>&lt;script src=&quot;justrec.js&quot;&gt;&lt;/script&gt;</code></li>
+	
+	
+	<li>Change <strong>micupload.php</strong> to your needs.<br>
+	Of course you can use any server script language which fits best,
+	for example, ASP, JSP, Perl, Ruby on Rails and so on.<br>
+	Just make sure that you set appropriate value for the '<b>host</b>' option in <em>justrec.init()</em> (see below).</li>
+	
+	<li>Write <em>justrec.init(options, element)</em> somewhere in your JS script.<br>
+	All possible <strong>options</strong> are described in a section <a href="#opt">Options</a>,	and <strong>element</strong> (which is optional parameter) is the element where you want SWF-wrapper to be attached to
+	(mostly it is your main recording window, see section <a href="#dts">Demo</a> below).
+	<b>element</b> defaults to body of the page if not set.<br>
+	Please note that you must use <em>justrec.init()</em> after document is ready (all DOM nodes placed out).</li>
+	
+	<li>Now, when you want to start recording, use <em>justrec.record(maxTime)</em> in JavaScript,
+	where <strong>maxTime</strong> is the optional parameter which defines maximum recording time in seconds,
+	default value is 30 seconds.</li>
+	
+	<li>To interrupt recording before <b>maxTime</b> exceeds you may use <em>justrec.stop()</em> in order to stop the recording</li>
+	
+	<li>After this you can convert recording using <em>justrec.convert()</em> command which will convert current recording from unpacked and larger of size WAV format to neat and fairly small MP3 format, which is in much extent suitable for usage and transferring.</li>
+	
+	<li>And the last step is to spawn <em>justrec.send()</em> command which will send MP3 recording data to your server (or just where you want to send it to) using server-side script <strong>micupload.php</strong> (or any that you defined in host parameter).</li>
+	
+	<li>You can preview recording before converting it to MP3, 
+	for converting process can take some time depending on the size of recording.
+	Previewing may be done by <em>justrec.preview()</em> command. 
+	Command <em>justrec.stoppreview()</em> stops previewing.
+	If you are unsatisfied with result you can spawn <em>justrec.record()</em> command anew in order to make new recording.	</li> 
+	
+	<li>Most of the job for recordings is done through callbacks that your JavaScript receives after some part of process occurs. 
+	For example, when process of recording really starts your script will receive <strong>recordingStarted()</strong> callback.
+	During recording your script can catch <strong>recordingActivity(time, level)</strong> callback to see what's going on.
+	There are 9 callbacks in JustRec, full list and description of which you may find in <a href="#opt">Options</a> section.</li>
+</ol>
+<br>
+
+<hr>
+
+<h2 id="dwn"><i class="fa">&#xf019;</i> Download</h2>
+<h3>Choose download type of JustRec</h3>
+
+<div><strong>Note</strong>: Downloadable files are distinct in zip method only and have same contents</div>
+<br>
+<table>
+	<tr><th colspan="2">Production release</th></tr>
+	<tr>
+		<th title="in ZIP format">justrec.zip (141.21 Kb)</th>
+		<td>
+			<form target="_blank" action="http://beotiger.com/download/justrec" method="post">
+				<input type="hidden" name="type" value="zip">
+				<input type="hidden" name="name" value="justrec">
+				<button>Download</button>
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<th title="in TARBALL format (tgz) ">justrec.tgz (141.5 Kb)</th>
+		<td>
+			<form target="_blank" action="http://beotiger.com/download/justrec" method="post">
+				<input type="hidden" name="type" value="tgz">
+				<input type="hidden" name="name" value="justrec">
+				<button>Download</button>
+			</form>
+		</td>
+	</tr>
+</table>
+
+<h3>Files in this archive are:</h3>
+<ol>
+	<li><strong>justrec.js</strong> - minified version of justrec.js. If you want normal version, see <strong>Development release</strong> section below</li>
+	<li><strong>justrec.swf</strong> - Flash plugin which does all job for recording and converting</li>
+	<li><strong>micupload.php</strong> - Server-side script for uploading MP3 data. You can use your server-side script of course if you change it in <em>host</em> option of justrec settings</li>
+</ol>
+
+<table>
+	<tr><th colspan="2">Development release</th></tr>
+	<tr>
+		<th title="in ZIP format">justrec-dev.zip (316.97 Kb)</th>
+		<td>
+			<form target="_blank" action="http://beotiger.com/download/justrec" method="post">
+				<input type="hidden" name="type" value="zip">
+				<input type="hidden" name="name" value="justrec-dev">
+				<button>Download</button>
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<th title="in TARBALL format (tgz) ">justrec-dev.tgz (308.25 Kb)</th>
+		<td>
+			<form target="_blank" action="http://beotiger.com/download/justrec" method="post">
+				<input type="hidden" name="type" value="tgz">
+				<input type="hidden" name="name" value="justrec-dev">
+				<button>Download</button>
+			</form>
+		</td>
+	</tr>
+</table>
+
+<h3>Files in this archive are:</h3>
+<ol>
+	<li><strong>justrec.js</strong> - normal version of justrec.js with comments and formatting</li>
+	<li><strong>rec.js</strong> - helper script to init and use JustRec</li>
+	<li><strong>justrec.html</strong> - demo html page </li>
+	
+	<li><strong>justrec.swf</strong> - Flash plugin which does all job for recording and converting</li>
+	<li><strong>micupload.php</strong> - Server-side script for uploading MP3 data</li>
+	
+	<li><strong>FLA/Main.as</strong> - ActionScript source for <b>justrec.swf</b></li>
+	<li><strong>FLA/justrec.fla</strong> - Flash project for compiling <b>Main.as</b> in Adobe(tm) Flash environment</li>
+	<li><strong>FLA/shine.swc</strong> - ShineMP3 lib for converting to MP3. Needed to compile <b>Main.as</b>. Add it to Flash included libraries before compiling</li>
+	<li><strong>fr/* , org/*</strong> - folders with some libraries needed to compile <b>Main.as</b> script</li>
+</ol>
+
+<div><strong>Note</strong>: you may compile <b>Main.as</b> in <i>FLEX_SDK</i> environment with command: <code>mxmlc -o justrec.swf Main.as</code></div>
+
+<br>
+
+<hr>
+
+<h2 id="cmd"><i class="fa">&#xf01d;</i> Commands</h2>
+<table class="jc-opts">
+
+<tr><th>Command</th><th>Description</th></tr>
+	<tr><th>justrec.record([maxTime])</th><td>Start recording. Can throw <em>recordingStarted</em> and <em>recordingError</em> callbacks. Keep throwing <em>recordingActivity</em> callback during recording process.<br>
+	<strong>maxTime</strong> is optional parameter that defines maximum length of recording in seconds, it defaults to 30 seconds if not set</td></tr>
+	<tr><th>justrec.stop()</th><td>Stop recording. Throws <em>recordingStopped</em> callback</td></tr>
+				
+	<tr><th>justrec.preview()</th><td>Start previewing recording from SWF object</td></tr>
+	<tr><th>justrec.stoppreview()</th><td>Stop previewing spawned by <b>justrec.preview()</b> command</td></tr>
+	<tr><th>justrec.convert()</th><td>Begin converting the recording from WAV to MP3 format. Can throw <em>mp3Converting</em> and <em>mp3ConvertingError</em> callbacks. Throws <em>mp3Converted</em> callback when converting succeeds.</td></tr>
+				
+	<tr><th>justrec.send()</th><td>Send prepared MP3 file to server. Must be runned after <b>justrec.convert()</b> command. Throws <em>sendingProgress</em> callback during sending process and <em>sendingFinished</em> callback when sending succeeds. If it is runned before converting throws <em>mp3ConvertingError</em> callback</td></tr>
+</table>
+<br>
+
+<hr>
+
+<h2 id="opt"><i class="fa">&#xf085;</i> Options</h2>
+
+<table class="jc-opts">
+<tr><th>Property</th><th>Default</th><th>Description</th></tr>
+	<tr><th>rec_width</th><td>480</td><td>Width of SWF plugin (in pixels)</td></tr>
+	<tr><th>rec_height</th><td>320</td><td>Height of SWF plugin (in pixels)</td></tr>
+				
+	<tr><th>recorderlayout_id</th><td>'justrec_area'</td><td>id attribute of DIV wrapper with SWF object in it. 
+																		Change it if it conflicts with ids of your HTML page</td></tr>
+	<tr><th>recorder_id</th><td>'justrec'</td><td>id attribute of the OBJECT with SWF plugin.
+																								Change it if it conflicts with ids of your HTML page</td></tr>
+	<tr><th>recorder_name</th><td>'justrec'</td><td>name attribute of the OBJECT with SWF plugin. Keep it as <b>recorder_id</b> for backward compatibilities</td></tr>
+				
+	<tr><th>swf_path</th><td>'justrec.swf'</td><td>Pathname for injected SWF file</td></tr>
+	<tr><th>host</th><td>'micupload.php?f=justrec.mp3'</td><td>Pathname and parameter of a server side script</td></tr>
+				
+	<tr><th colspan="3">Callback functions</th></tr>
+	
+	<tr><th>recordingStarted </th><td> function(){}</td><td>Spawns when recording really started,
+																													but if it's the first time for page session 
+																													Flash box for camera/microphone acceptance
+																													will be popped up before recording process 
+																													and user should allow it in order to start recording</td></tr>
+	<tr><th>recordingStopped</th><td> function(){}</td><td>Spawns when recording interrupts either by timer or by <em>justrec.stop()</em> command</td></tr>
+	<tr><th>recordingError </th><td> function(){}</td><td>Spawns when something goes wrong with recording process</td></tr>
+				
+	<tr><th>recordingActivity</th><td> function(time, level){}</td><td>Spawns during recording process. <b>time</b> is elapsed time of recording and <b>level</b> is the percent of audible level of microphone (values are from 0 to 100)</td></tr>
+				
+	<tr><th>sendingFinished </th><td> function(){}</td><td>Spawns when MP3 file fully transferred to the server by server-side script</td></tr>
+	<tr><th>sendingProgress </th><td> function(percent){}</td><td>Spawns during sending progress. <strong>percent</strong> parameter is the percent of sent data, from 0 to 100. May be useful to track if MP3 file is too big</td></tr>
+				
+	<tr><th>mp3Converting </th><td> function(percent){}</td><td>Spawns during converting the recording from WAV to MP3. This process usually takes some time so you can make progress bar to inform users about the fact. <strong>percent</strong> parameter is the percent of job done, from 0 to 100</td></tr>
+	<tr><th>mp3Converted </th><td> function(){}</td><td>Spawns when converting finishes</td></tr>
+	<tr><th>mp3ConvertingError </th><td> function(){}</td><td>Spawns when something goes wrong with converting process. Should never occur, but <em>justrec.send()</em> command throws this callback when called without MP3 converting done</td></tr>
+</table>
+
+
+<br>
+
+<hr>
+		
+<h2 id="dts"><i class="fa">&#xf028;</i> Demo and test</h2>
+
+<div>In this section you may try JustRec and see how it works,<br>
+see commands' results and callback functions calls.</div>
+
+<div id="myflashrec">
+	<h3>justrec: Just Record and Enjoy!</h3>
+
+	<div id="rec-ctrl">
+		<strong>maxTime</strong>: 
+						<select id="maxtime" title="Select maximum time for recording">
+							<option value="5">5 sec</option>
+							<option value="10">10 sec</option>
+							<option value="30" selected>30 sec</option>
+							<option value="60">1 min</option>
+							<option value="90">1.5 min</option>
+							<option value="120">2 min</option>
+							<option value="180">3 min</option>
+						</select>
+		&nbsp;&nbsp;&nbsp;
+		<strong>Time left</strong>: <span id="time">00:00</span>
+		<input type="hidden" id="recn" value="%%RECN%%">
+		
+	</div>
+	<br>
+	<div>
+		<strong>Level</strong>: <span id="level"></span>
+	</div>  
+
+	<div>
+		<div id="levelbase">
+			<div id="levelbar"></div>
+		</div>
+	</div>
+
+	<hr>
+
+	<div>
+		<input type="button" id="record" value="Record">  
+		<input disabled type="button" id="stop" value="Stop">
+		
+		<input type="button" id="preview" value="Preview">
+		<input type="button" id="stoppreview" value="Stop preview">
+		
+		<br><br>
+		
+		<input type="button" id="convert" value="Convert to MP3">
+		
+		<input type="button" id="send" value="Send MP3 to server">
+
+		<br>
+	</div>
+	
+	<hr>
+
+	<p>
+		<strong>Note</strong>: you can preview recording before converting it to MP3 and sending to server.<br>
+		Send MP3 data to server only after converting.<br>
+		Your MP3 recording is in a public domain and will be live for at least 1 hour.
+	</p>
+
+	<h3>Events Log &nbsp;&nbsp;&nbsp;<button onclick="$('#log').val('')">Clear log</button></h3>
+	<div>
+		<textarea id="log" cols="50" rows="8"></textarea>
+	</div>
+</div>
+
+<br>
+
+
+
+
+<hr>
+
+<h2 id="spt"><i class="fa">&#xf0e7;</i> Support</h2>
+<div>
+If JustRec is not working, check that you specified right path 
+for SWF plugin file and for the server-side script.<br><br>
+
+Paths are relative to the current HTML page but not to included JavaScript files.<br><br>
+
+Also you must have Adobe(tm) Flash Player plugin installed in your browser,<br>
+the same for your users that will be using your product.<br><br>
+
+<h3>Using server-side script</h3>
+MP3 files are sent to server-side script as POST data.<br>
+You can grab it and save anywhere. <br>
+For the name of this MP3 data you may use either parameter from JavaScript<br>
+(in option '<i>host</i>' like '<b>micupload.php?f=jrec.mp3</b>' for example, where '<i>?f=jrec.mp3</i>' is the part defines filename),
+or make any filename string inside your server-side script.
+
+<h3><i class="fa">&#xf126;</i> Some notes on using JustRec</h3>
+<b>Q.</b>: Does JustRec require jquery?<br>
+<b>A.</b>: No, JustRec does not require jquery or any other library. It should work out of the box in any modern browser (older IEs (&lt;9) are not modern browsers) and if you have Flash Player plugin installed in it.<br><br>
+
+<h3>Issues</h3>
+It seems that <b>sendingProgress</b> callback is spawned after 100% of sent data only.<br>
+I do not know if it is a bug in Main.as ActionScript or in a Flash Player engine.<br>
+Needed some research.
+
+<br><br>
+<i class="fa">&#xf071;</i>&nbsp; If you still need help, please email to <b>beoiger@beotiger.com</b><br><br>
+
+
+<br></div>
+
+<hr>
+
+
+<div>
+
+
+<br>
+</div>
+
+
+<h2><i id="love" class="fa">&#xf08a;</i> Thank you for using JustRec</h2>
+
+
+
+</div> 
+</body>
+</html>
