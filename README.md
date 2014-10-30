@@ -16,3 +16,5 @@ You should make view and model for recording by HTML and JavaScript means.
 
 You can communicate with ActionScript in your JavaScript file,
 using ExternalInterface callbacks.
+
+See http://beotiger.com/justrec for home page of the project.
